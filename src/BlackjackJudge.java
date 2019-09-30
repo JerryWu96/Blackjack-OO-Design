@@ -1,5 +1,6 @@
-import java.util.ArrayList;
-import java.util.List;
+/**
+ * Created by Jiatong Hao, Xiankang Wu and Lijun Chen on 9/27/2019.
+ */
 
 public class BlackjackJudge extends Judge<BlackjackPlayer, BlackjackDealer> {
 

@@ -2,11 +2,7 @@
  * Created by Jiatong Hao, Xiankang Wu and Lijun Chen on 9/27/2019.
  */
 
-public class GameVisualizer {
-
-    public void msg(String str) {
-        System.out.println(str);
-    }
+public class BlackjackGameLogger extends GameLogger {
 
     public void welcomeMsg() {
         System.out.println("Welcome to our game!");
@@ -41,10 +37,6 @@ public class GameVisualizer {
         System.out.println("Invalid input. Please enter a number between " + min_number + " and " + max_number + ": ");
     }
 
-    public void invalidAction(String action) {
-        System.out.println("You cannot " + action + ". Please select another action.");
-    }
-
     public void playHandInfo(int playerId, int playerBalance, int handIdx, int bet) {
         int displayedHandIdx = handIdx + 1;
         System.out.println("Player " + playerId + ", Hand no." + displayedHandIdx + ", Bet for this hand = $" +
@@ -76,7 +68,6 @@ public class GameVisualizer {
     }
 
     public void printPlayerBalance(int playerId, int roundBalance, int playerBalance, int roundNum) {
-        // System.out.println("\nPlayer " + playerId + " current balance is " + playerBalance);
         if (roundBalance > 0)
             System.out.println("At round " + roundNum + ", Player " + playerId + " wins $" + roundBalance + ".");
         else if (roundBalance == 0)

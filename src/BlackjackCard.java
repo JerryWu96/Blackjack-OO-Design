@@ -1,4 +1,9 @@
+/**
+ * Created by Jiatong Hao, Xiankang Wu and Lijun Chen on 9/27/2019.
+ */
+
 public class BlackjackCard extends Card {
+
     public BlackjackCard(String suit, int value) {
         super(suit, value);
     }

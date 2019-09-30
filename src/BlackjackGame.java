@@ -1,3 +1,7 @@
+/**
+ * Created by Jiatong Hao, Xiankang Wu and Lijun Chen on 9/27/2019.
+ */
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -18,7 +22,7 @@ public class BlackjackGame extends Game implements BlackjackAction {
     private BlackjackDealer dealer;
     private BlackjackDeck deck;
     private BlackjackJudge judge;
-    private GameVisualizer visualizer;
+    private BlackjackGameLogger visualizer;
     private final String[] actions = {"hit", "stand", "doubleUp", "split"};
 
     private int winVal = WIN_VAL;
@@ -27,9 +31,8 @@ public class BlackjackGame extends Game implements BlackjackAction {
     private int playerCount;
 
 
-    BlackjackGame() {
-        super(0);
-        visualizer = new GameVisualizer();
+    public BlackjackGame() {
+        visualizer = new BlackjackGameLogger();
         visualizer.welcomeMsg();
         setGameParams();
         setPlayerNumber();
@@ -56,7 +59,7 @@ public class BlackjackGame extends Game implements BlackjackAction {
         System.out.println("\n*****************\nRound: " + getRound());
 
         for (BlackjackPlayer player : playerList) {
-            player.makeBet();
+            makeBet(player);
         }
         dealInitialCards();
         playersPlay();
@@ -283,7 +286,7 @@ public class BlackjackGame extends Game implements BlackjackAction {
                 visualizer.playerLeaves(player);
                 toRemove.add(player);
             }
-            else if (player.cashOut()) {
+            else if (cashOut(player)) {
                 visualizer.playerLeaves(player);
                 toRemove.add(player);
             }
@@ -306,10 +309,9 @@ public class BlackjackGame extends Game implements BlackjackAction {
     }
 
     /**
-     * Deals on card.
-     *
-     * @param deck - a deck instance
-     * @param hand - a hand instance
+     * Deals one card
+     * @param deck instance of deck
+     * @param hand instance of hand
      */
     @Override
     public void hit(BlackjackDeck deck, BlackjackHand hand) {
@@ -321,9 +323,8 @@ public class BlackjackGame extends Game implements BlackjackAction {
      * The player could split into two hands, if the two cards in the current hand are of the same rank （10）
      * Cards must be same value - In most casinos, Tens, Jacks, Queens and Kings all count as ten
      * and can be considered the same for splitting rules.
-     *
-     * @param hand - a hand instance
-     * @return true if successfully split hands, false otherwise
+     * @param player instance of player
+     * @param hand instance of hand
      */
     @Override
     public void split(BlackjackPlayer player, BlackjackHand hand) {
@@ -338,10 +339,9 @@ public class BlackjackGame extends Game implements BlackjackAction {
     }
 
     /**
-     * The player double up their bets and immediately followed by a hit and stand.
-     *
-     * @param deck a deack instance.
-     * @param hand a hand instance.
+     * The player double up their bets and immediately followed by a hit and stand
+     * @param deck instance of deck
+     * @param hand instance of hand
      */
     @Override
     public void doubleUp(BlackjackDeck deck, BlackjackPlayer player, BlackjackHand hand) {
@@ -356,5 +356,47 @@ public class BlackjackGame extends Game implements BlackjackAction {
     @Override
     public void stand() {
         return;
+    }
+
+    /**
+     * Ask player to make initial bet
+     * @param player - a player instance
+     */
+    @Override
+    public void makeBet(BlackjackPlayer player) {
+        Scanner sc = new Scanner(System.in);
+        int input;
+        boolean isValid = false;
+        System.out.println("Current balance of player " + player.getId() + " is: " + player.getBalance());
+        System.out.println("Player " + player.getId() + ", please enter an integer between 1 and " + player.getBalance() + " as bet: ");
+
+        while (!isValid) {
+            input = getInteger(sc.nextLine());
+            if (input >= 1 && input <= player.getBalance()) {
+                isValid = true;
+                player.getHandAt(0).setBet(input);
+                player.setBalance(-input);
+            } else {
+                System.out.println("Invalid input. Please enter an integer between 1 and " + player.getBalance() + " as bet: ");
+            }
+        }
+    }
+
+    /**
+     * Ask the player if he/she would like to cash out.
+     * @param player - a player instance
+     * @return true if player cash out, false otherwise
+     */
+    @Override
+    public boolean cashOut(BlackjackPlayer player) {
+
+        Scanner scanner = new Scanner(System.in);
+        boolean isCashOut = false;
+        System.out.println("Player " + player.getId() + ", do you want to cash out? Please enter Y/y for yes. All other input means no.");
+        String choice = scanner.nextLine();
+        if (choice.equals("y") || choice.equals("Y")) {
+            isCashOut = true;
+        }
+        return isCashOut;
     }
 }
